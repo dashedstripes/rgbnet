@@ -1,5 +1,3 @@
-# RGBNet
-
 For a relatively simple project, I'd like to build a neural network that takes RGB values, and outputs wether the colour is light, or dark.
 
 This project is inspired by Jabrils (YouTuber), he mentioned it as being a good first project.
@@ -57,3 +55,11 @@ I'm not sure why, but now that I've created the train and test loop, we're not m
 I'm writing a script to generate a tonne of colors and their respective labels, `0-127` for dark and `127-255` for light. It's not perfect representation of dark and light colors, but it's a start. I'm going to use the output of this script to continue training the model in case a lack of data was the issue.
 
 I've changed the format slightly so that there are three rows `[red, green, blue, label]` so I need to update my dataloader accordingly.
+
+I've been debugging the model for a while now and finally stumbed upon the reason why my gradients were stuck at zero (or not updating). Thanks to [this article I found online](https://discuss.pytorch.org/t/loss-does-not-change-and-weights-remain-zero/33717) It mentioned that the person asking the question was using two non-linear layers in their output. Both `ReLU` and `Sigmoid` which is *exactly* what I was doing! I've removed the final `ReLU` layer and the accuracy is improving during the epochs!
+
+I'm going to experiment with changing the learning rate, batch size, and epochs (aka the hyperparameters) to see if I can get something working.
+
+Once I'm at a better accuracy rate during training, I'd like to see how to save the model and make new predictions with it.
+
+Right after I wrote the above I ran the code again, with no changes, and accuracy was stuck at 0%... I'm not sure what's going on here that causes it to work _sometimes_.
