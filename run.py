@@ -34,5 +34,5 @@ print(run([149, 44, 201])) # light
 print(run([46, 30, 35])) # dark
 
 print(run([234, 176, 255])) # light
-
+print(run([84, 84, 84])) # dark
 

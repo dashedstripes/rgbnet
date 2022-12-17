@@ -63,3 +63,36 @@ I'm going to experiment with changing the learning rate, batch size, and epochs 
 Once I'm at a better accuracy rate during training, I'd like to see how to save the model and make new predictions with it.
 
 Right after I wrote the above I ran the code again, with no changes, and accuracy was stuck at 0%... I'm not sure what's going on here that causes it to work _sometimes_.
+
+### Accuracy
+
+I'm not sure how the accuracy score works, I'm going to look more indepth as to how the accuracy is calculated, as without that I can't really tell if my model is working. I can rely on the loss decreasing, but I'd like to know how accurate the model is.
+
+From what I can tell, calling `torch.sum(a == b)` will return the sum of all values in each tensor that satisfy the condition `a == b`. Therefore, to get the number of results where `pred === label` in a particular batch, you can call `torch.sum(pred == label)`.
+
+It compares each item in the next tensor and outputs how many match.
+
+Example:
+
+```python
+
+def test_sum():
+  a = torch.tensor([0, 1, 1, 0])
+  b = torch.tensor([0, 0, 1, 1])
+  print(torch.sum(a == b))
+
+test_sum()
+# tensor(2)
+```
+
+### Saving the Model
+
+I'm not entirely sure why it didn't always work, but after correcting the accuracy, I wanted to move on. So I took a look at what it would take to save the model.
+
+Initially, I saved the weights to a pth file, but realised I needed to load a bunch of other data if I wanted to use the model. So I saved the model using `torch.save`
+
+Then, in another file, I imported the `model.pth` and ran it. However, it seems that due to python serialization, it required me to have the NN class present, so I copied it over to the file. I also needed the sigmoid function to interperate the results.
+
+Once this was done, I was able to make some predictions on new data, which worked pretty well!
+
+I'm very happy with my first attempt at building a basic neural network, and I'm excited to continue learning.
