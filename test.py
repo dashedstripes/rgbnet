@@ -17,7 +17,7 @@ class NeuralNetwork(nn.Module):
     return logits
 
 def run(rgb):
-  model = torch.load("rgb_nn.pth")
+  model = torch.load("models/rgb_nn.pth")
   value = torch.tensor(rgb, dtype=torch.float32)
   logits = model(value)
 

@@ -38,8 +38,8 @@ class NeuralNetwork(nn.Module):
     logits = self.linear_relu_stack(x)
     return logits
 
-training_data = RGBDataset("rgb_train.csv")
-test_data = RGBDataset("rgb_test.csv")
+training_data = RGBDataset("data/rgb_train.csv")
+test_data = RGBDataset("data/rgb_test.csv")
 
 train_dataloader = DataLoader(training_data, batch_size=64, shuffle=True)
 test_dataloader = DataLoader(test_data, batch_size=64, shuffle=True)
@@ -102,7 +102,7 @@ def run():
   print("Done!")
 
   print("Saving Model")
-  torch.save(model.state_dict(), 'rgb_nn.pth')
+  torch.save(model.state_dict(), 'models/rgb_nn.pth')
   print('Saved!')
 
 # run()
