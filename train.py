@@ -59,6 +59,7 @@ model = NeuralNetwork().to(device)
 loss_fn = torch.nn.BCEWithLogitsLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
+# we're using this sigmoid function to determine the prediction in test loop, it's bundled in BCEWithLogitsLoss, so we needed to extract just sigmoid for testing
 m = nn.Sigmoid()
 
 # train_features, train_labels = next(iter(train_dataloader))
