@@ -77,6 +77,7 @@ def train_loop(dataloader, model, loss_fn, optimizer):
     loss.backward()
     optimizer.step()
 
+    # I am leaving this here because it's useful to know that the weights are updating, it helped me a lot during debugging
     # for name, param in model.named_parameters():
     #   print(name, param.grad)
 
