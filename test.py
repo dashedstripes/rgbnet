@@ -3,6 +3,13 @@ from torch import nn
 
 m = nn.Sigmoid()
 
+def normalize_rgb(rgb):
+  # normalize the tensor values so that dark colors are max 0.5, and light colors are max 255
+  v = torch.tensor([rgb[0], rgb[1], rgb[2]], dtype=torch.float32)
+  v -= 0
+  v /= 255
+  return v
+
 class NeuralNetwork(nn.Module):
   def __init__(self):
     super(NeuralNetwork, self).__init__()
@@ -17,10 +24,12 @@ class NeuralNetwork(nn.Module):
     return logits
 
 def run(rgb):
+  # normalize the inputs
+  v = normalize_rgb(rgb)
+  
+  # run the data
   model = torch.load("models/rgb_nn.pth")
-  value = torch.tensor(rgb, dtype=torch.float32)
-  logits = model(value)
-
+  logits = model(v)
   pred = torch.round(m(logits))
 
   if(pred == 0):

@@ -1,11 +1,20 @@
-import os
 import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
 import pandas as pd
-import numpy as np
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
+
+num_of_epochs = 5
+learning_rate = 1e-2
+batch_size = 64
+
+def normalize_rgb(rgb):
+  # normalize the tensor values so that dark colors are max 0.5, and light colors are max 255
+  v = torch.tensor([rgb[0], rgb[1], rgb[2]], dtype=torch.float32)
+  v -= 0
+  v /= 255
+  return v
 
 class RGBDataset(Dataset):
   def __init__(self, data_file):
@@ -23,7 +32,8 @@ class RGBDataset(Dataset):
     if raw_label == 'dark':
       label = 1
 
-    return torch.tensor([raw_value[0], raw_value[1], raw_value[2]], dtype=torch.float32), torch.tensor([label], dtype=torch.float32)
+    v = normalize_rgb(raw_value)
+    return v, torch.tensor([label], dtype=torch.float32)
 
 class NeuralNetwork(nn.Module):
   def __init__(self):
@@ -41,21 +51,17 @@ class NeuralNetwork(nn.Module):
 training_data = RGBDataset("data/rgb_train.csv")
 test_data = RGBDataset("data/rgb_test.csv")
 
-train_dataloader = DataLoader(training_data, batch_size=64, shuffle=True)
-test_dataloader = DataLoader(test_data, batch_size=64, shuffle=True)
+train_dataloader = DataLoader(training_data, batch_size=batch_size, shuffle=True)
+test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
 
 model = NeuralNetwork().to(device)
 loss_fn = torch.nn.BCEWithLogitsLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=1e-2)
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 m = nn.Sigmoid()
-# loss_fn = nn.BCELoss()
 
 # train_features, train_labels = next(iter(train_dataloader))
-# logits = model(train_features)
-# pred = m(logits)
-# loss = loss_fn(pred, train_labels)
-# print(loss)
+# print(train_features)
 
 def train_loop(dataloader, model, loss_fn, optimizer):
   size = len(dataloader.dataset)
@@ -93,34 +99,17 @@ def test_loop(dataloader, model, loss_fn):
   correct /= size
   print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
 
-def run():
-  epochs = 50
+def run(save_model=False):
+  epochs = num_of_epochs
   for t in range(epochs):
     print(f"Epoch {t+1}\n-------------------------------")
     train_loop(train_dataloader, model, loss_fn, optimizer)
     test_loop(test_dataloader, model, loss_fn)
   print("Done!")
 
-  print("Saving Model")
-  torch.save(model.state_dict(), 'models/rgb_nn.pth')
-  print('Saved!')
+  if save_model:
+    print("Saving Model")
+    torch.save(model, 'models/rgb_nn.pth')
+    print('Saved!')
 
-# run()
-
-# light_logits = model(torch.tensor([242, 143, 136], dtype=torch.float))
-# light_pred = m(light_logits)
-# print(torch.round(light_pred))
-
-# dark_logits = model(torch.tensor([48, 12, 9], dtype=torch.float))
-# dark_pred = m(dark_logits)
-# print(torch.round(dark_pred))
-
-
-# light2_logits = model(torch.tensor([149, 44, 201], dtype=torch.float))
-# light2_pred = m(light2_logits)
-# print(torch.round(light2_pred))
-
-# dark2_logits = model(torch.tensor([46, 30, 35], dtype=torch.float))
-# dark2_pred = m(dark2_logits)
-# print(torch.round(dark2_pred))
-
+run(save_model=False)
