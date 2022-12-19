@@ -10,7 +10,7 @@ learning_rate = 1e-2
 batch_size = 64
 
 def normalize_rgb(rgb):
-  # normalize the tensor values so that dark colors are max 0.5, and light colors are max 255
+  # normalize the tensor values so that dark colors are max 0.5, and light colors are max 1
   v = torch.tensor([rgb[0], rgb[1], rgb[2]], dtype=torch.float32)
   v /= 255
   return v
