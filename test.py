@@ -6,7 +6,6 @@ m = nn.Sigmoid()
 def normalize_rgb(rgb):
   # normalize the tensor values so that dark colors are max 0.5, and light colors are max 255
   v = torch.tensor([rgb[0], rgb[1], rgb[2]], dtype=torch.float32)
-  v -= 0
   v /= 255
   return v
 
