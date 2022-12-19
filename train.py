@@ -54,6 +54,8 @@ train_dataloader = DataLoader(training_data, batch_size=batch_size, shuffle=True
 test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=True)
 
 model = NeuralNetwork().to(device)
+
+# BCEWithLogitsLoss is the same as calling Sigmoid, followed by Binary Cross Entropy Loss, apparently BCEWithLogitsLoss is more performant
 loss_fn = torch.nn.BCEWithLogitsLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
